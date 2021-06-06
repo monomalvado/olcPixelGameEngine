@@ -44,4 +44,6 @@
 #include "Contributions/olcPGEX_Camera2D.h"
 #include "Contributions/olcPGEX_RayCast2D.h"
 #include "Contributions/olcPGEX_ResourceManager.h"
+
+#define OLC_PGEX_SPLASHSCREEN
 #include "Contributions/olcPGEX_SplashScreen.h"

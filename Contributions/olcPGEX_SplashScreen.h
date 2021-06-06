@@ -91,166 +91,174 @@
 
 */
 
-#ifndef OLC_PGEX_SPLASHSCREEN
-#define OLC_PGEX_SPLASHSCREEN
+#ifndef OLC_PGEX_SPLASHSCREEN_H
+#define OLC_PGEX_SPLASHSCREEN_H
 
-class olcPGEX_SplashScreen : public olc::PGEX
-{
-private:
-	enum SS_State
-	{
-		SS_INIT,
-		SS_PRE_FADE_IN,
-		SS_FADE_IN,
-		SS_DISPLAY,
-		SS_FADE_OUT,
-		SS_COMPLETE
-	} 
-	nSplashScreenState = SS_INIT, nNextSplashScreenState = SS_INIT;
+#include "olcPixelGameEngine.h"
 
-	// Default values - change these to suit your tastes...
-	int nScale = 4;
-	int nPartialScale = 2;
-	
-	olc::Pixel pBackGroundColour = olc::Pixel(0, 0, 0, 255);
-	olc::Pixel pPGEColour = olc::Pixel(255, 191, 0, 255);
-	olc::Pixel pNameSpaceColour = olc::Pixel(95, 0, 191, 255);
-	olc::Pixel pDefaultColour = olc::WHITE;
+namespace olc {
+    class SplashScreen : public olc::PGEX
+    {
+    private:
+        enum SS_State
+        {
+            SS_INIT,
+            SS_PRE_FADE_IN,
+            SS_FADE_IN,
+            SS_DISPLAY,
+            SS_FADE_OUT,
+            SS_COMPLETE
+        }
+                nSplashScreenState = SS_INIT, nNextSplashScreenState = SS_INIT;
 
-	// Animation Variables
-	float fAlpha = 0.0f;
-	float fTotalDuration = 3.0f;
-	float fFadeDuration;
-	float fAnimationCounter = 0.0f;
-	float fTextOffset = 0.0f;
+        // Default values - change these to suit your tastes...
+        int nScale = 4;
+        int nPartialScale = 2;
 
-	// Text variables
-	std::string strMadeWith = "made with";
-	std::string strPGE =       "olc  PixelGameEngine";
-	std::string strNameSpace = "   ::";
-	std::string strOneLoneCoder = "OneLoneCoder.com";
+        olc::Pixel pBackGroundColour = olc::Pixel(0, 0, 0, 255);
+        olc::Pixel pPGEColour = olc::Pixel(255, 191, 0, 255);
+        olc::Pixel pNameSpaceColour = olc::Pixel(95, 0, 191, 255);
+        olc::Pixel pDefaultColour = olc::WHITE;
 
-	// Position variables
-	olc::vf2d vecMadeWithPos;
-	olc::vf2d vecPGEPos;
-	olc::vf2d vecOneLoneCoderPos;
-	olc::vf2d vecMiddleScreenPos;
+        // Animation Variables
+        float fAlpha = 0.0f;
+        float fTotalDuration = 3.0f;
+        float fFadeDuration;
+        float fAnimationCounter = 0.0f;
+        float fTextOffset = 0.0f;
 
-public:
-	inline bool AnimateSplashScreen(float fElapsedTime);
+        // Text variables
+        std::string strMadeWith = "made with";
+        std::string strPGE =       "olc  PixelGameEngine";
+        std::string strNameSpace = "   ::";
+        std::string strOneLoneCoder = "OneLoneCoder.com";
 
-};
+        // Position variables
+        olc::vf2d vecMadeWithPos;
+        olc::vf2d vecPGEPos;
+        olc::vf2d vecOneLoneCoderPos;
+        olc::vf2d vecMiddleScreenPos;
 
-bool olcPGEX_SplashScreen::AnimateSplashScreen(float fElapsedTime)
-{
-	// Don't run any logic if the splash screen is complete
-	if (nSplashScreenState == SS_COMPLETE) return false;
+    public:
+        inline bool AnimateSplashScreen(float fElapsedTime);
 
-	// Clear screen to desired background colour, increment the counter and calculate the current text offset position
-	pge->Clear(pBackGroundColour);
-	fAnimationCounter += fElapsedTime;
-	fTextOffset = fAnimationCounter * (float)nScale * 4.0f;
-
-	switch (nSplashScreenState)
-	{
-	case SS_INIT:
-	{
-		// Prevent invalid scale size
-		if (nScale < 1) nScale = 1;
-		if (nScale * 160 > pge->ScreenWidth()) nScale = pge->ScreenWidth() / 160;
-
-		// Calculate the scale of the smaller text
-		nPartialScale = nScale > 1 ? nScale / 2 : 1;
-
-		// Set initial position of text
-		vecMiddleScreenPos = { (float)pge->ScreenWidth() / 2, (float)pge->ScreenHeight() / 2 };
-		vecPGEPos = { vecMiddleScreenPos.x - (8 * nScale * 10), vecMiddleScreenPos.y - (4 * nScale) };
-		vecMadeWithPos = { vecPGEPos.x - (8 * nPartialScale * 4), vecPGEPos.y - (8 * nPartialScale) - (nPartialScale / 2) };
-		vecOneLoneCoderPos = { vecPGEPos.x + (8 * nScale * 20) - (8 * nPartialScale * 12), vecPGEPos.y + (8 * nScale) + (8 * (nPartialScale / 2)) };
-
-		// Calculate the fade duration based on the total duration
-		fFadeDuration = fTotalDuration / 4.0f;
-
-		nNextSplashScreenState = SS_PRE_FADE_IN;
-
-	} break;
-
-	case SS_PRE_FADE_IN:
-	{
-		// Pause for a period at the beginning so the window has a chance to initialise
-		// 1.5 seconds by default, change to 0.0f if you don't require a pre fade in delay
-		if (fAnimationCounter >= 1.5f)
-		{
-			fAnimationCounter = 0.0f;
-			nNextSplashScreenState = SS_FADE_IN;
-		}
-
-	} break;
-
-	case SS_FADE_IN:
-	{
-		// Lerp the alpha values and display the text
-		fAlpha += (255.0f / fFadeDuration) * fElapsedTime;
-		if (fAlpha > 255.0f) fAlpha = 255.0f;
-
-		pNameSpaceColour.a = (uint8_t)fAlpha;
-		pPGEColour.a = (uint8_t)fAlpha;
-		pDefaultColour.a = (uint8_t)fAlpha;
-
-		pge->DrawString(vecPGEPos, strNameSpace, pNameSpaceColour, nScale);
-		pge->DrawString(vecPGEPos, strPGE, pPGEColour, nScale);
-		pge->DrawString(olc::vf2d{ vecMadeWithPos.x + fTextOffset, vecMadeWithPos.y }, strMadeWith, pDefaultColour, nPartialScale);
-		pge->DrawString(olc::vf2d{ vecOneLoneCoderPos.x - fTextOffset, vecOneLoneCoderPos.y }, strOneLoneCoder, pDefaultColour, nPartialScale);
-
-		if (fAnimationCounter >= fFadeDuration)
-			nNextSplashScreenState = SS_DISPLAY;
-
-	} break;
-
-	case SS_DISPLAY:
-	{
-		// Display the text with no transparency
-		pge->DrawString(vecPGEPos, strNameSpace, pNameSpaceColour, nScale);
-		pge->DrawString(vecPGEPos, strPGE, pPGEColour, nScale);
-		pge->DrawString(olc::vf2d{ vecMadeWithPos.x + fTextOffset, vecMadeWithPos.y }, strMadeWith, pDefaultColour, nPartialScale);
-		pge->DrawString(olc::vf2d{ vecOneLoneCoderPos.x - fTextOffset, vecOneLoneCoderPos.y }, strOneLoneCoder, pDefaultColour, nPartialScale);
-
-		if (fAnimationCounter >= fTotalDuration - fFadeDuration)
-			nNextSplashScreenState = SS_FADE_OUT;
-
-	} break;
-
-	case SS_FADE_OUT:
-	{
-		// Lerp the alpha back down to clear and display the text
-		fAlpha -= (255.0f / fFadeDuration) * fElapsedTime;
-		if (fAlpha < 0.0f) fAlpha = 0.0f;
-
-		pNameSpaceColour.a = (uint8_t)fAlpha;
-		pPGEColour.a = (uint8_t)fAlpha;
-		pDefaultColour.a = (uint8_t)fAlpha;
-
-		pge->DrawString(vecPGEPos, strNameSpace, pNameSpaceColour, nScale);
-		pge->DrawString(vecPGEPos, strPGE, pPGEColour, nScale);
-		pge->DrawString(olc::vf2d{ vecMadeWithPos.x + fTextOffset, vecMadeWithPos.y }, strMadeWith, pDefaultColour, nPartialScale);
-		pge->DrawString(olc::vf2d{ vecOneLoneCoderPos.x - fTextOffset, vecOneLoneCoderPos.y }, strOneLoneCoder, pDefaultColour, nPartialScale);
-
-		if (fAnimationCounter >= fTotalDuration)
-			nNextSplashScreenState = SS_COMPLETE;
-
-	} break;
-
-	default:
-	{
-
-		return false;
-	} break;
-
-	}
-
-	nSplashScreenState = nNextSplashScreenState;
-	return true;
+    };
 }
 
+#ifdef OLC_PGEX_SPLASHSCREEN
+#undef OLC_PGEX_SPLASHSCREEN
+namespace olc {
+    bool SplashScreen::AnimateSplashScreen(float fElapsedTime)
+    {
+        // Don't run any logic if the splash screen is complete
+        if (nSplashScreenState == SS_COMPLETE) return false;
+
+        // Clear screen to desired background colour, increment the counter and calculate the current text offset position
+        pge->Clear(pBackGroundColour);
+        fAnimationCounter += fElapsedTime;
+        fTextOffset = fAnimationCounter * (float)nScale * 4.0f;
+
+        switch (nSplashScreenState)
+        {
+            case SS_INIT:
+            {
+                // Prevent invalid scale size
+                if (nScale < 1) nScale = 1;
+                if (nScale * 160 > pge->ScreenWidth()) nScale = pge->ScreenWidth() / 160;
+
+                // Calculate the scale of the smaller text
+                nPartialScale = nScale > 1 ? nScale / 2 : 1;
+
+                // Set initial position of text
+                vecMiddleScreenPos = { (float)pge->ScreenWidth() / 2, (float)pge->ScreenHeight() / 2 };
+                vecPGEPos = { vecMiddleScreenPos.x - (8 * nScale * 10), vecMiddleScreenPos.y - (4 * nScale) };
+                vecMadeWithPos = { vecPGEPos.x - (8 * nPartialScale * 4), vecPGEPos.y - (8 * nPartialScale) - (nPartialScale / 2) };
+                vecOneLoneCoderPos = { vecPGEPos.x + (8 * nScale * 20) - (8 * nPartialScale * 12), vecPGEPos.y + (8 * nScale) + (8 * (nPartialScale / 2)) };
+
+                // Calculate the fade duration based on the total duration
+                fFadeDuration = fTotalDuration / 4.0f;
+
+                nNextSplashScreenState = SS_PRE_FADE_IN;
+
+            } break;
+
+            case SS_PRE_FADE_IN:
+            {
+                // Pause for a period at the beginning so the window has a chance to initialise
+                // 1.5 seconds by default, change to 0.0f if you don't require a pre fade in delay
+                if (fAnimationCounter >= 1.5f)
+                {
+                    fAnimationCounter = 0.0f;
+                    nNextSplashScreenState = SS_FADE_IN;
+                }
+
+            } break;
+
+            case SS_FADE_IN:
+            {
+                // Lerp the alpha values and display the text
+                fAlpha += (255.0f / fFadeDuration) * fElapsedTime;
+                if (fAlpha > 255.0f) fAlpha = 255.0f;
+
+                pNameSpaceColour.a = (uint8_t)fAlpha;
+                pPGEColour.a = (uint8_t)fAlpha;
+                pDefaultColour.a = (uint8_t)fAlpha;
+
+                pge->DrawString(vecPGEPos, strNameSpace, pNameSpaceColour, nScale);
+                pge->DrawString(vecPGEPos, strPGE, pPGEColour, nScale);
+                pge->DrawString(olc::vf2d{ vecMadeWithPos.x + fTextOffset, vecMadeWithPos.y }, strMadeWith, pDefaultColour, nPartialScale);
+                pge->DrawString(olc::vf2d{ vecOneLoneCoderPos.x - fTextOffset, vecOneLoneCoderPos.y }, strOneLoneCoder, pDefaultColour, nPartialScale);
+
+                if (fAnimationCounter >= fFadeDuration)
+                    nNextSplashScreenState = SS_DISPLAY;
+
+            } break;
+
+            case SS_DISPLAY:
+            {
+                // Display the text with no transparency
+                pge->DrawString(vecPGEPos, strNameSpace, pNameSpaceColour, nScale);
+                pge->DrawString(vecPGEPos, strPGE, pPGEColour, nScale);
+                pge->DrawString(olc::vf2d{ vecMadeWithPos.x + fTextOffset, vecMadeWithPos.y }, strMadeWith, pDefaultColour, nPartialScale);
+                pge->DrawString(olc::vf2d{ vecOneLoneCoderPos.x - fTextOffset, vecOneLoneCoderPos.y }, strOneLoneCoder, pDefaultColour, nPartialScale);
+
+                if (fAnimationCounter >= fTotalDuration - fFadeDuration)
+                    nNextSplashScreenState = SS_FADE_OUT;
+
+            } break;
+
+            case SS_FADE_OUT:
+            {
+                // Lerp the alpha back down to clear and display the text
+                fAlpha -= (255.0f / fFadeDuration) * fElapsedTime;
+                if (fAlpha < 0.0f) fAlpha = 0.0f;
+
+                pNameSpaceColour.a = (uint8_t)fAlpha;
+                pPGEColour.a = (uint8_t)fAlpha;
+                pDefaultColour.a = (uint8_t)fAlpha;
+
+                pge->DrawString(vecPGEPos, strNameSpace, pNameSpaceColour, nScale);
+                pge->DrawString(vecPGEPos, strPGE, pPGEColour, nScale);
+                pge->DrawString(olc::vf2d{ vecMadeWithPos.x + fTextOffset, vecMadeWithPos.y }, strMadeWith, pDefaultColour, nPartialScale);
+                pge->DrawString(olc::vf2d{ vecOneLoneCoderPos.x - fTextOffset, vecOneLoneCoderPos.y }, strOneLoneCoder, pDefaultColour, nPartialScale);
+
+                if (fAnimationCounter >= fTotalDuration)
+                    nNextSplashScreenState = SS_COMPLETE;
+
+            } break;
+
+            default:
+            {
+
+                return false;
+            } break;
+
+        }
+
+        nSplashScreenState = nNextSplashScreenState;
+        return true;
+    }
+}
 #endif
 
+#endif
