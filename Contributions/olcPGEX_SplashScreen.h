@@ -140,7 +140,7 @@ namespace olc {
         olc::vf2d vecMiddleScreenPos;
 
     public:
-        inline bool AnimateSplashScreen(float fElapsedTime);
+        bool AnimateSplashScreen(float fElapsedTime);
 
     };
 }
