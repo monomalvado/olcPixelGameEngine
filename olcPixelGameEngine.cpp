@@ -1,6 +1,7 @@
 #define OLC_PGE_APPLICATION
 #include "olcPixelGameEngine.h"
 
+// Extensions
 #define OLC_PGEX_NETWORK
 #include "olcPGEX_Network.h"
 
@@ -21,3 +22,26 @@
 
 #define OLC_PGEX_TRANSFORMEDVIEW
 #include "olcPGEX_TransformedView.h"
+
+// Contributions
+
+#include "Contributions/olcPGEX_AdditionalColours.h"
+
+#define OLC_PGEX_AUDIOCONVERT
+#include "Contributions/olcPGEX_AudioConverter.h"
+
+#define OLC_PGE_GAMEPAD
+#include "Contributions/olcPGEX_Gamepad.h"
+
+#define OLC_PGEX_ANIMSPR
+#include "Contributions/olcPGEX_AnimatedSprite.h"
+
+#define OLC_PGEX_TTF
+#include "Contributions/olcPGEX_TTF.h"
+
+
+#include "Contributions/olcPGEX_Animator2D.h"
+#include "Contributions/olcPGEX_Camera2D.h"
+#include "Contributions/olcPGEX_RayCast2D.h"
+#include "Contributions/olcPGEX_ResourceManager.h"
+#include "Contributions/olcPGEX_SplashScreen.h"
