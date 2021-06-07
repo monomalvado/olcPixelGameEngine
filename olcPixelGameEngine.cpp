@@ -47,9 +47,3 @@
 
 #define OLC_PGEX_SPLASHSCREEN
 #include "Contributions/olcPGEX_SplashScreen.h"
-
-#define OLC_PGEX_FONT
-#include "Contributions/olcPGEX_Font.h"
-
-#define OLC_PGEX_CUSTOMFONT
-#include "Contributions/olcPGEX_CustomFont.h"

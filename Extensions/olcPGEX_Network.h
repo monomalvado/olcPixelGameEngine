@@ -51,7 +51,7 @@
 
 	Author
 	~~~~~~
-	David Barr, aka javidx9, ©OneLoneCoder 2019, 2020, 2021
+	David Barr, aka javidx9, ï¿½OneLoneCoder 2019, 2020, 2021
 
 */
 
@@ -203,6 +203,7 @@ namespace olc
 			tsqueue() = default;
 			tsqueue(const tsqueue<T>&) = delete;
 			virtual ~tsqueue() { clear(); }
+            bool die = false;
 
 		public:
 			// Returns and maintains item at front of Queue
@@ -280,12 +281,19 @@ namespace olc
 
 			void wait()
 			{
-				while (empty())
+				while (empty() && !die)
 				{
 					std::unique_lock<std::mutex> ul(muxBlocking);
 					cvBlocking.wait(ul);
 				}
 			}
+
+            void Die()
+            {
+                std::unique_lock<std::mutex> ul(muxBlocking);
+                die = true;
+                cvBlocking.notify_one();
+            }
 
 		protected:
 			std::mutex muxQueue;
@@ -847,6 +855,8 @@ namespace olc
 
 				// Tidy up the context thread
 				if (m_threadContext.joinable()) m_threadContext.join();
+
+				m_qMessagesIn.Die();
 
 				// Inform someone, anybody, if they care...
 				std::cout << "[SERVER] Stopped!\n";
