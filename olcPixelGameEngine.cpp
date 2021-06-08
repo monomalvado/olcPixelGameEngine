@@ -3,25 +3,25 @@
 
 // Extensions
 #define OLC_PGEX_NETWORK
-#include "olcPGEX_Network.h"
+#include "Extensions/olcPGEX_Network.h"
 
 #define OLC_PGE_GRAPHICS2D
-#include "olcPGEX_Graphics2D.h"
+#include "Extensions/olcPGEX_Graphics2D.h"
 
 #define OLC_PGE_GRAPHICS3D
-#include "olcPGEX_Graphics3D.h"
+#include "Extensions/olcPGEX_Graphics3D.h"
 
 #define OLC_PGEX_POPUPMENU
-#include "olcPGEX_PopUpMenu.h"
+#include "Extensions/olcPGEX_PopUpMenu.h"
 
 #define OLC_PGEX_RAYCASTWORLD
-#include "olcPGEX_RayCastWorld.h"
+#include "Extensions/olcPGEX_RayCastWorld.h"
 
 #define OLC_PGEX_SOUND
-#include "olcPGEX_Sound.h"
+#include "Extensions/olcPGEX_Sound.h"
 
 #define OLC_PGEX_TRANSFORMEDVIEW
-#include "olcPGEX_TransformedView.h"
+#include "Extensions/olcPGEX_TransformedView.h"
 
 // Contributions
 

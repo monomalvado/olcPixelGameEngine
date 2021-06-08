@@ -3,7 +3,7 @@
 #include <utility>
 
 #include "olcPixelGameEngine.h"
-#include "olcPGEX_Sound.h"
+#include "Extensions/olcPGEX_Sound.h"
 
 namespace olc {
 
